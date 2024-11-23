@@ -26,12 +26,14 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error loading the CSV file:", error);
         });
 
+    // Toggle between Celsius and Fahrenheit
     document.getElementById('unit-toggle').addEventListener('click', () => {
         isCelsius = !isCelsius;  // Toggle the unit
         document.getElementById('unit-toggle').textContent = isCelsius ? "Switch to °F" : "Switch to °C";
         updateWeatherDisplay();
     });
 
+    // When a city is selected, fetch weather data
     cityDropdown.addEventListener('change', (event) => {
         const coordinates = event.target.value.split(',');
         const lat = coordinates[0];
@@ -61,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
         forecast.forEach((day, index) => {
             if (index < 7) {  // Show only the next 7 days
                 const weatherDay = document.createElement('div');
-                weatherDay.classList.add('weather-day');
+                weatherDay.classList.add('weather-day', 'col-md-4', 'mb-4');
 
                 const date = new Date(day.time * 1000); // Convert Unix timestamp to Date
                 const dayName = date.toLocaleDateString("en-US", { weekday: 'long' });
@@ -79,9 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 weatherDay.innerHTML = `
-                    <h3>${dayName}</h3>
-                    <p>${weatherIcon} Temperature: ${temp.toFixed(1)}${tempUnit}</p>
-                    <p>Weather: ${day.temp2m > 20 ? "Sunny" : "Cloudy"}</p>
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">${dayName}</h5>
+                            <p class="card-text">${weatherIcon} Temperature: ${temp.toFixed(1)}${tempUnit}</p>
+                            <p class="card-text">Weather: ${day.temp2m > 20 ? "Sunny" : "Cloudy"}</p>
+                        </div>
+                    </div>
                 `;
                 forecastContainer.appendChild(weatherDay);
             }
