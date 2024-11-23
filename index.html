@@ -9,10 +9,11 @@
         <meta http-equiv=“Expires” content=”-1″>
         <meta http-equiv=“CACHE-CONTROL” content=”NO-CACHE”>
 
+        <title>Weather Forecast for European Cities</title>
         <!-- CSS Stylesheets -->
         <link rel="stylesheet" href="css/master.css">
-
-        <title>Weather Forecast for European Cities</title>
+        <!-- PapaParse CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     </head>
 
     <body>
@@ -26,6 +27,7 @@
                 <select id="city-dropdown">
                     <!-- City options will be populated here -->
                 </select>
+                <button id="unit-toggle">Switch to °F</button>
             </section>
 
             <section id="weather-forecast">
@@ -33,14 +35,11 @@
             </section>
         </main>
 
+        <footer>
+            <p class="copyright-text">&copy;2024 European Travel Agency</p>
+        </footer>
     </body>
 
-    <footer>
-        <p class="copyright-text">&copy;2024 European Travel Agency</p>
-    </footer>
-
-    <!-- PapaParse CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <!-- Main JavaScript -->
     <script src="js/main.js"></script>
 </html>
