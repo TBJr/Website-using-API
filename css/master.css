@@ -1,0 +1,89 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and Background */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 2rem;
+    color: #4CAF50;
+}
+
+/* City Selection */
+#city-selection {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#city-dropdown {
+    padding: 10px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 10px;
+}
+
+/* Weather Forecast Section */
+#weather-forecast {
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#weather-forecast h2 {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.weather-day {
+    margin: 10px 0;
+}
+
+.weather-day p {
+    font-size: 1.2rem;
+    color: #555;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    #city-dropdown {
+        width: 100%;
+    }
+
+    #weather-forecast h2 {
+        font-size: 1.2rem;
+    }
+}
