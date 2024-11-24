@@ -5,18 +5,26 @@
     box-sizing: border-box;
 }
 
+/* Ensure the background covers the entire page */
+html, body {
+    height: 100%; /* Set the height to cover the entire viewport */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+}
+
 /* Body and Background */
 body {
     font-family: Arial, sans-serif;
     background-color: #003f88; /* Dark blue background */
     color: #fff;
     text-align: center;
-    padding: 20px;
-    background-image: url('travel-pattern.png'); /* Add your decorative travel-themed background */
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: block;
+    background-image: url('https://img.freepik.com/free-vector/realistic-background-monsoon-season_23-2150428848.jpg?t=st=1732470951~exp=1732474551~hmac=395369567d8b82b7885a50c6d4610de3b1d6551c7feff4a9ef866e94acd0a9e0&w=2000'); /* Decorative travel-themed background */
+    background-size: cover; /* Ensure the background covers the entire page */
+    background-repeat: no-repeat; /* Prevent repeating */
+    background-position: center; /* Center the background image */
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    min-height: 100vh; /* Ensure minimum height is the viewport height */
 }
 
 /* Header */
@@ -51,18 +59,26 @@ header p a .badge:hover {
 }
 
 #city-dropdown {
-    max-width: 250px;
-    display: inline-block;
-    text-align: center;
+    max-width: 300px;
+    margin: 0 auto;
 }
 
 #unit-toggle {
+    font-size: 0.8rem; /* Smaller font size */
+    padding: 5px 10px; /* Adjust padding */
+    width: auto; /* Remove the full width */
+    display: inline-block; /* Keep it inline */
+    border: 2px solid #ffd700; /* Add border for emphasis */
     color: #ffd700;
+    background-color: transparent;
+    border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
-    text-decoration: underline;
-    display: inline-block;
-    font-size: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#unit-toggle:hover {
+    background-color: #ffd700;
+    color: #003f88;
 }
 
 /* Weather Forecast Section */
@@ -74,17 +90,10 @@ header p a .badge:hover {
     margin-top: 20px;
 }
 
-/* Weather Cards - Using Bootstrap's Card Component */
-/*.weather-day {*/
-/*    width: 150px;*/
-/*    text-align: center;*/
-/*    transition: transform 0.3s ease-in-out;*/
-/*}*/
-
-/* Weather Cards - Custom */
+/* Weather Forecast Section */
 .weather-day {
     width: 150px; /* Fixed width for all cards */
-    height: 250px; /* Fixed height for all cards */
+    height: 260px; /* Fixed height for all cards */
     text-align: center;
     display: flex;
     flex-direction: column; /* Stack content vertically */
@@ -92,19 +101,46 @@ header p a .badge:hover {
     align-items: center; /* Center align content horizontally */
     padding: 10px;
     transition: transform 0.3s ease-in-out;
+    background: rgba(255, 255, 255, 0.15); /* Semi-transparent background */
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .weather-day .card {
     width: 100%; /* Ensure the card takes full width of its parent */
     height: 100%; /* Ensure the card takes full height of its parent */
+    display: flex; /* Make the card's body a flex container */
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box; /* Include padding in height calculation */
 }
 
-.weather-day .card-body {
-    display: flex;
-    flex-direction: column; /* Stack content vertically */
-    justify-content: space-between; /* Space out content */
-    align-items: center; /* Center content horizontally */
-    height: 100%; /* Ensure content spans full card height */
+.weather-day .card-text {
+    font-size: 0.9rem;
+    margin: 5px 0;
+    text-align: center;
+    overflow: hidden; /* Prevent overflow */
+    text-overflow: ellipsis;
+}
+
+.weather-day .card-title {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+
+.weather-day:hover {
+    transform: scale(1.1);
+}
+
+.weather-day img {
+    width: 70px; /* Adjust the size of the weather icon */
+    height: 70px; /* Keep it proportional */
+    margin: 10px 0;
+    flex-shrink: 0;
 }
 
 .weather-day h5 {
@@ -112,21 +148,21 @@ header p a .badge:hover {
     margin-bottom: 5px;
 }
 
-.weather-day:hover {
-    transform: scale(1.1);
-}
-
-.weather-day img {
-    /*width: 50px;*/
-    /*margin: 10px 0;*/
-    width: 70px; /* Adjust the size of the weather icon */
-    height: 70px; /* Keep it proportional */
-    margin: 10px 0;
-}
-
 .weather-day p {
     font-size: 0.9rem;
     margin: 5px 0;
+    text-align: center;
+    overflow: hidden; /* Prevent overflow */
+    text-overflow: ellipsis;
+}
+
+/* Loading Spinner */
+#loading-spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
 }
 
 /* Footer */
@@ -147,6 +183,16 @@ footer {
     }
 
     .weather-day {
-        width: 130px; /* Smaller card width for mobile */
+        width: 120px;
+        height: 220px;
+    }
+
+    .weather-day img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .weather-day .card-text {
+        font-size: 0.8rem;
     }
 }
