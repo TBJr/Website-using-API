@@ -27,7 +27,7 @@ export async function fetchWeatherData(lat, lon) {
     }
 
     try {
-        const apiUrl = `http://www.7timer.info/bin/api.pl?lon=${lon}&lat=${lat}&product=civil&output=json`;
+        const apiUrl = `https://www.7timer.info/bin/api.pl?lon=${lon}&lat=${lat}&product=civil&output=json`;
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error("Failed to fetch weather data");
         const data = await response.json();
