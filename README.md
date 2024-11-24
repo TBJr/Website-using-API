@@ -1,6 +1,6 @@
 # Website using API
 
-This project is a web application that provides a 7-day weather forecast for major European cities, designed to help a European travel agency increase bookings. It retrieves weather data using the [7Timer API](http://7timer.info/doc.php).
+This project is a web application that provides a 7-day weather forecast for major European cities, designed to help a European travel agency increase bookings. It retrieves weather data using the [7Timer API](https://7timer.info/doc.php).
 
 ## Features
 
@@ -48,7 +48,7 @@ Contributions are welcome! To contribute:
 This project is licensed under the [MIT License].
 
 ## Acknowledgments
-- [7Timer](http://www.7timer.info/doc.php?lang=en#civil) API for providing the weather data.
+- [7Timer](https://www.7timer.info/doc.php?lang=en#civil) API for providing the weather data.
 - [SkyRoute66 EurOrbit](https://skyroute66.com/eurorbit2/) for design inspiration.
 
 <hr>
