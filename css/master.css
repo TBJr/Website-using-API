@@ -16,6 +16,7 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    display: block;
 }
 
 /* Header */
@@ -74,10 +75,41 @@ header p a .badge:hover {
 }
 
 /* Weather Cards - Using Bootstrap's Card Component */
+/*.weather-day {*/
+/*    width: 150px;*/
+/*    text-align: center;*/
+/*    transition: transform 0.3s ease-in-out;*/
+/*}*/
+
+/* Weather Cards - Custom */
 .weather-day {
-    width: 150px;
+    width: 150px; /* Fixed width for all cards */
+    height: 250px; /* Fixed height for all cards */
     text-align: center;
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    justify-content: space-between; /* Distribute content evenly */
+    align-items: center; /* Center align content horizontally */
+    padding: 10px;
     transition: transform 0.3s ease-in-out;
+}
+
+.weather-day .card {
+    width: 100%; /* Ensure the card takes full width of its parent */
+    height: 100%; /* Ensure the card takes full height of its parent */
+}
+
+.weather-day .card-body {
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    justify-content: space-between; /* Space out content */
+    align-items: center; /* Center content horizontally */
+    height: 100%; /* Ensure content spans full card height */
+}
+
+.weather-day h5 {
+    font-size: 1rem;
+    margin-bottom: 5px;
 }
 
 .weather-day:hover {
@@ -85,7 +117,10 @@ header p a .badge:hover {
 }
 
 .weather-day img {
-    width: 50px;
+    /*width: 50px;*/
+    /*margin: 10px 0;*/
+    width: 70px; /* Adjust the size of the weather icon */
+    height: 70px; /* Keep it proportional */
     margin: 10px 0;
 }
 

@@ -35,7 +35,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // When a city is selected, fetch weather data
     cityDropdown.addEventListener('change', (event) => {
-        const coordinates = event.target.value.split(',');
+        const selectedValue = event.target.value;
+
+        // Check if a valid city is selected
+        if (!selectedValue) {
+            console.log("Please select a valid city.");
+            return;
+        }
+
+        const coordinates = selectedValue.split(',');
+        // const coordinates = event.target.value.split(',');
         const lat = coordinates[0];
         const lon = coordinates[1];
 
@@ -162,8 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="card text-center">
                         <div class="card-body">
                             <h5 class="card-title">${dayName}</h5>
-                            <p class="card-text">${weatherIcon}</p>
-                            <p class="card-text" style="font-size: small">${weatherDescription}</p>
+                            <p class="card-text" style="font-size: 2.5rem; margin: 10px 0;">${weatherIcon}</p>
+                            <p class="card-text" style="text-transform: uppercase; font-weight: bold;">${weatherDescription}</p>
                             <p class="card-text">${temp.toFixed(1)}${tempUnit}</p>
                         </div>
                     </div>
