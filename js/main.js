@@ -65,30 +65,111 @@ document.addEventListener("DOMContentLoaded", () => {
                 const weatherDay = document.createElement('div');
                 weatherDay.classList.add('weather-day', 'col-md-4', 'mb-4');
 
-                const date = new Date(day.time * 1000); // Convert Unix timestamp to Date
-                const dayName = date.toLocaleDateString("en-US", { weekday: 'long' });
+                // Calculate the date from the timepoint
+                const currentDate = new Date();
+                const forecastDate = new Date(currentDate.getTime() + day.timepoint * 60 * 60 * 1000);
+                const dayName = forecastDate.toLocaleDateString("en-US", { weekday: 'short', month: 'short', day: 'numeric' });
 
-                // Convert the temperature based on the selected unit
-                const temp = isCelsius ? day.temp2m : (day.temp2m * 9/5) + 32;  // Celsius to Fahrenheit conversion
+                // Use temp2m as the temperature value
+                const temp = isCelsius ? day.temp2m : (day.temp2m * 9 / 5) + 32;
                 const tempUnit = isCelsius ? "°C" : "°F";
 
-                // Determine the weather icon based on temperature
-                let weatherIcon = "☁️";  // Default to cloudy
-                if (day.temp2m > 20) {
-                    weatherIcon = "🌞";  // Sunny if temp > 20°C
-                } else if (day.temp2m < 10) {
-                    weatherIcon = "🌧️";  // Rainy if temp < 10°C
+                // Debug weather data
+                console.log(day.weather);
+
+                // Assign weather icons based on the API's weather field
+                let weatherIcon;
+                let weatherDescription = "";
+                switch (day.weather) {
+                    case "clearday":
+                    case "clearnight":
+                        weatherIcon = "☀️"; // Clear
+                        weatherDescription = "Clear";
+                        break;
+                    case "pcloudyday":
+                    case "pcloudynight":
+                        weatherIcon = "⛅"; // Partly Cloudy
+                        weatherDescription = "Partly Cloudy";
+                        break;
+                    case "mcloudyday":
+                    case "mcloudynight":
+                        weatherIcon = "☁️"; // Mostly Cloudy
+                        weatherDescription = "Mostly Cloudy";
+                        break;
+                    case "cloudyday":
+                    case "cloudynight":
+                        weatherIcon = "🌥️"; // Cloudy
+                        weatherDescription = "Cloudy";
+                        break;
+                    case "humidday":
+                    case "humidnight":
+                        weatherIcon = "🌫️"; // Humid
+                        weatherDescription = "Humid";
+                        break;
+                    case "lightrainday":
+                    case "lightrainnight":
+                        weatherIcon = "🌦️"; // Light Rain
+                        weatherDescription = "Light Rain";
+                        break;
+                    case "oshowerday":
+                    case "oshowernight":
+                        weatherIcon = "🌧️"; // Occasional Showers
+                        weatherDescription = "Occasional Showers";
+                        break;
+                    case "ishowerday":
+                    case "ishowernight":
+                        weatherIcon = "🌦️"; // Isolated Showers
+                        weatherDescription = "Isolated Showers";
+                        break;
+                    case "lightsnowday":
+                    case "lightsnownight":
+                        weatherIcon = "❄️"; // Light Snow
+                        weatherDescription = "Light Snow";
+                        break;
+                    case "rainday":
+                    case "rainnight":
+                        weatherIcon = "🌧️"; // Rain
+                        weatherDescription = "Rain";
+                        break;
+                    case "snowday":
+                    case "snownight":
+                        weatherIcon = "❄️"; // Snow
+                        weatherDescription = "Snow";
+                        break;
+                    case "rainsnowday":
+                    case "rainsnownight":
+                        weatherIcon = "🌨️"; // Rain and Snow
+                        weatherDescription = "Rain and Snow";
+                        break;
+                    case "tsday":
+                    case "tsnight":
+                        weatherIcon = "⛈️"; // Thunderstorm
+                        weatherDescription = "Thunderstorm";
+                        break;
+                    case "tsrainday":
+                    case "tsrainnight":
+                        weatherIcon = "⛈️"; // Thunderstorm with Rain
+                        weatherDescription = "Thunderstorm with Rain";
+                        break;
+                    default:
+                        weatherIcon = "🌞"; // Default
+                        weatherDescription = "Unknown";
+                        break;
                 }
 
+                // Build the weather card
                 weatherDay.innerHTML = `
                     <div class="card text-center">
                         <div class="card-body">
                             <h5 class="card-title">${dayName}</h5>
-                            <p class="card-text">${weatherIcon} Temperature: ${temp.toFixed(1)}${tempUnit}</p>
-                            <p class="card-text">Weather: ${day.temp2m > 20 ? "Sunny" : "Cloudy"}</p>
+                            <p class="card-text">${weatherIcon}</p>
+                            <p class="card-text" style="font-size: small">${weatherDescription}</p>
+                            <p class="card-text">${temp.toFixed(1)}${tempUnit}</p>
                         </div>
                     </div>
                 `;
+
+                // Append the weather card to the container
                 forecastContainer.appendChild(weatherDay);
             }
         });
