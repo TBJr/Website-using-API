@@ -103,7 +103,16 @@ header p a .badge:hover {
     transition: transform 0.3s ease-in-out;
     background: rgba(255, 255, 255, 0.15); /* Semi-transparent background */
     border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.weather-day.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.weather-day:hover {
+    transform: scale(1.1);
 }
 
 .weather-day .card {
@@ -131,11 +140,6 @@ header p a .badge:hover {
     flex-shrink: 0; /* Prevent shrinking */
 }
 
-
-.weather-day:hover {
-    transform: scale(1.1);
-}
-
 .weather-day img {
     width: 70px; /* Adjust the size of the weather icon */
     height: 70px; /* Keep it proportional */
@@ -157,7 +161,16 @@ header p a .badge:hover {
 }
 
 /* Loading Spinner */
-#loading-spinner {
+.spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    font-size: 1.2rem;
+}
+
+#loading-spinner,
+#city-loading-spinner {
     position: fixed;
     top: 50%;
     left: 50%;

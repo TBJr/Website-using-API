@@ -49,6 +49,14 @@
         <main class="container">
             <!-- Real Time Search / City Dropdown -->
             <section id="city-selection" class="mb-4">
+                <label for="city-search" class="visually-hidden">Search for a city</label>
+                <input
+                        id="city-search"
+                        type="text"
+                        class="form-control mb-2"
+                        placeholder="Start typing to filter cities..."
+                        aria-label="Search for a city"
+                >
                 <label for="city-dropdown" class="visually-hidden">Select a city</label>
                 <select id="city-dropdown" class="form-select" aria-label="City dropdown">
                     <option value="" disabled selected>Select a city</option>
@@ -76,13 +84,18 @@
             <p>&copy; 2024 EurOrbit by <a href="https://github.com/TBJr">Thomas Brown</a></p>
         </footer>
 
-        <!-- Loading Spinner -->
+        <!-- Loading Spinners -->
+        <div id="city-loading-spinner" class="spinner text-warning" style="display: none;">
+            Loading cities...
+        </div>
         <div id="loading-spinner" class="spinner-border text-light" role="status" style="display: none;">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">Loading weather...</span>
         </div>
 
         <!-- Main JavaScript -->
-        <script src="js/main.min.js"></script>
+<!--        <script src="js/main.js"></script>-->
+        <script type="module" src="./js/main.min.js"></script>
+
 
         <!-- Bootstrap 5 JS -->
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
