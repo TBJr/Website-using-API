@@ -1,208 +1,144 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const cityDropdown = document.getElementById('city-dropdown');
-    let isCelsius = true;  // Default to Celsius
+    const cityDropdown = document.getElementById("city-dropdown");
+    const forecastContainer = document.getElementById("weather-forecast");
+    const unitToggle = document.getElementById("unit-toggle");
+    const spinner = document.getElementById("loading-spinner");
+    const summary = document.getElementById("weekly-summary");
+    const lastUpdated = document.getElementById("last-updated");
+    let isCelsius = true; // Default to Celsius
 
-    // Load the CSV file
-    fetch('city_coordinates.csv')
-        .then(response => response.text())
-        .then(data => {
-            // Parse the CSV data
+    // Fetch and populate city data from the CSV file
+    fetch("city_coordinates.csv")
+        .then((response) => response.text())
+        .then((data) => {
             Papa.parse(data, {
                 header: true,
                 skipEmptyLines: true,
-                complete: function(results) {
+                complete: (results) => {
                     const cities = results.data;
-                    cities.forEach(city => {
-                        // Create a new option for each city
-                        const option = document.createElement('option');
+                    cities.forEach((city) => {
+                        const option = document.createElement("option");
                         option.value = `${city.latitude},${city.longitude}`;
-                        option.textContent = city.city;  // Assuming 'city' is the name of the city in CSV
+                        option.textContent = city.city;
                         cityDropdown.appendChild(option);
                     });
-                }
+                },
             });
         })
-        .catch(error => {
+        .catch((error) => {
             console.error("Error loading the CSV file:", error);
         });
 
-    // Toggle between Celsius and Fahrenheit
-    document.getElementById('unit-toggle').addEventListener('click', () => {
-        isCelsius = !isCelsius;  // Toggle the unit
-        document.getElementById('unit-toggle').textContent = isCelsius ? "Switch to °F" : "Switch to °C";
-        updateWeatherDisplay();
+    // Handle unit toggle between Celsius and Fahrenheit
+    unitToggle.addEventListener("click", () => {
+        isCelsius = !isCelsius;
+        unitToggle.textContent = isCelsius ? "Switch to °F" : "Switch to °C";
+        if (cityDropdown.value) updateWeather();
     });
 
-    // When a city is selected, fetch weather data
-    cityDropdown.addEventListener('change', (event) => {
-        const selectedValue = event.target.value;
+    // Fetch weather when a city is selected
+    cityDropdown.addEventListener("change", () => {
+        if (cityDropdown.value) updateWeather();
+    });
 
-        // Check if a valid city is selected
-        if (!selectedValue) {
-            console.log("Please select a valid city.");
-            return;
-        }
-
-        const coordinates = selectedValue.split(',');
-        // const coordinates = event.target.value.split(',');
-        const lat = coordinates[0];
-        const lon = coordinates[1];
-
-        // Call the 7Timer API
+    function updateWeather() {
+        const [lat, lon] = cityDropdown.value.split(",");
         const apiUrl = `http://www.7timer.info/bin/api.pl?lon=${lon}&lat=${lat}&product=civil&output=json`;
 
+        // Show loading spinner
+        spinner.style.display = "block";
+        forecastContainer.innerHTML = "";
+        summary.textContent = "";
+
         fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then((data) => {
                 displayWeather(data);
             })
-            .catch(error => {
-                console.error("Error fetching the weather data:", error);
-                document.getElementById('weather-forecast').innerHTML = "<p>Failed to retrieve weather data. Please try again later.</p>";
+            .catch((error) => {
+                console.error("Error fetching weather data:", error);
+                forecastContainer.innerHTML =
+                    "<p>Failed to retrieve weather data. Please try again later.</p>";
+            })
+            .finally(() => {
+                spinner.style.display = "none";
             });
-    });
+    }
 
     function displayWeather(data) {
         const forecast = data.dataseries;
-        const forecastContainer = document.getElementById('weather-forecast');
 
-        // Clear previous weather data
-        forecastContainer.innerHTML = "";
+        // Generate weekly summary
+        const temps = forecast.map((day) => day.temp2m);
+        const avgTemp =
+            temps.reduce((sum, temp) => sum + temp, 0) / temps.length;
+        summary.textContent = `This week's average temperature is ${
+            isCelsius ? avgTemp.toFixed(1) + "°C" : (avgTemp * 9) / 5 + 32 + "°F"
+        }.`;
 
         forecast.forEach((day, index) => {
-            if (index < 7) {  // Show only the next 7 days
-                const weatherDay = document.createElement('div');
-                weatherDay.classList.add('weather-day', 'col-md-4', 'mb-4');
+            if (index >= 7) return; // Limit to 7 days
 
-                // Calculate the date from the timepoint
-                const currentDate = new Date();
-                const forecastDate = new Date(currentDate.getTime() + day.timepoint * 60 * 60 * 1000);
-                const dayName = forecastDate.toLocaleDateString("en-US", { weekday: 'short', month: 'short', day: 'numeric' });
+            const weatherDay = document.createElement("div");
+            weatherDay.classList.add("weather-day", "col-md-4", "mb-4");
 
-                // Use temp2m as the temperature value
-                const temp = isCelsius ? day.temp2m : (day.temp2m * 9 / 5) + 32;
-                const tempUnit = isCelsius ? "°C" : "°F";
+            const date = new Date();
+            date.setDate(date.getDate() + index);
+            const dayName = date.toLocaleDateString("en-US", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+            });
 
-                // Debug weather data
-                console.log(day.weather);
+            const temp = isCelsius ? day.temp2m : (day.temp2m * 9) / 5 + 32;
+            const tempUnit = isCelsius ? "°C" : "°F";
 
-                // Assign weather icons based on the API's weather field
-                let weatherIcon;
-                let weatherDescription = "";
-                switch (day.weather) {
-                    case "clearday":
-                    case "clearnight":
-                        weatherIcon = "☀️"; // Clear
-                        weatherDescription = "Clear";
-                        break;
-                    case "pcloudyday":
-                    case "pcloudynight":
-                        weatherIcon = "⛅"; // Partly Cloudy
-                        weatherDescription = "Partly Cloudy";
-                        break;
-                    case "mcloudyday":
-                    case "mcloudynight":
-                        weatherIcon = "☁️"; // Mostly Cloudy
-                        weatherDescription = "Mostly Cloudy";
-                        break;
-                    case "cloudyday":
-                    case "cloudynight":
-                        weatherIcon = "🌥️"; // Cloudy
-                        weatherDescription = "Cloudy";
-                        break;
-                    case "humidday":
-                    case "humidnight":
-                        weatherIcon = "🌫️"; // Humid
-                        weatherDescription = "Humid";
-                        break;
-                    case "lightrainday":
-                    case "lightrainnight":
-                        weatherIcon = "🌦️"; // Light Rain
-                        weatherDescription = "Light Rain";
-                        break;
-                    case "oshowerday":
-                    case "oshowernight":
-                        weatherIcon = "🌧️"; // Occasional Showers
-                        weatherDescription = "Occasional Showers";
-                        break;
-                    case "ishowerday":
-                    case "ishowernight":
-                        weatherIcon = "🌦️"; // Isolated Showers
-                        weatherDescription = "Isolated Showers";
-                        break;
-                    case "lightsnowday":
-                    case "lightsnownight":
-                        weatherIcon = "❄️"; // Light Snow
-                        weatherDescription = "Light Snow";
-                        break;
-                    case "rainday":
-                    case "rainnight":
-                        weatherIcon = "🌧️"; // Rain
-                        weatherDescription = "Rain";
-                        break;
-                    case "snowday":
-                    case "snownight":
-                        weatherIcon = "❄️"; // Snow
-                        weatherDescription = "Snow";
-                        break;
-                    case "rainsnowday":
-                    case "rainsnownight":
-                        weatherIcon = "🌨️"; // Rain and Snow
-                        weatherDescription = "Rain and Snow";
-                        break;
-                    case "tsday":
-                    case "tsnight":
-                        weatherIcon = "⛈️"; // Thunderstorm
-                        weatherDescription = "Thunderstorm";
-                        break;
-                    case "tsrainday":
-                    case "tsrainnight":
-                        weatherIcon = "⛈️"; // Thunderstorm with Rain
-                        weatherDescription = "Thunderstorm with Rain";
-                        break;
-                    default:
-                        weatherIcon = "🌞"; // Default
-                        weatherDescription = "Unknown";
-                        break;
-                }
+            const weatherMap = {
+                clearday: ["☀️", "Clear"],
+                clearnight: ["🌙", "Clear Night"],
+                pcloudyday: ["⛅", "Partly Cloudy"],
+                pcloudynight: ["🌤️", "Partly Cloudy Night"],
+                mcloudyday: ["☁️", "Mostly Cloudy"],
+                mcloudynight: ["🌥️", "Mostly Cloudy Night"],
+                cloudyday: ["🌥️", "Cloudy"],
+                cloudynight: ["🌥️", "Cloudy"],
+                humidday: ["🌫️", "Humid"],
+                humidnight: ["🌫️", "Humid"],
+                lightrainday: ["🌦️", "Light Rain"],
+                lightrainnight: ["🌧️", "Light Rain Night"],
+                oshowerday: ["🌧️", "Occasional Showers"],
+                oshowernight: ["🌧️", "Occasional Showers"],
+                ishowerday: ["🌦️", "Isolated Showers"],
+                ishowernight: ["🌦️", "Isolated Showers"],
+                lightsnowday: ["❄️", "Light Snow"],
+                lightsnownight: ["❄️", "Light Snow"],
+                rainday: ["🌧️", "Rain"],
+                rainnight: ["🌧️", "Rain"],
+                snowday: ["❄️", "Snow"],
+                snownight: ["❄️", "Snow"],
+                rainsnowday: ["🌨️", "Rain and Snow"],
+                rainsnownight: ["🌨️", "Rain and Snow"],
+                tsday: ["⛈️", "Thunderstorm"],
+                tsnight: ["⛈️", "Thunderstorm"],
+                tsrainday: ["⛈️", "Thunderstorm with Rain"],
+                tsrainnight: ["⛈️", "Thunderstorm with Rain"],
+            };
 
-                // Build the weather card
-                weatherDay.innerHTML = `
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">${dayName}</h5>
-                            <p class="card-text" style="font-size: 2.5rem; margin: 10px 0;">${weatherIcon}</p>
-                            <p class="card-text" style="text-transform: uppercase; font-weight: bold;">${weatherDescription}</p>
-                            <p class="card-text">${temp.toFixed(1)}${tempUnit}</p>
-                        </div>
+            const [icon, description] = weatherMap[day.weather] || ["❓", "Unknown"];
+
+            weatherDay.innerHTML = `
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">${dayName}</h5>
+                        <p class="card-text" style="font-size: 2.5rem;">${icon}</p>
+                        <p class="card-text text-uppercase" style="text-transform: uppercase; font-weight: bold;">${description}</p>
+                        <p class="card-text">${temp.toFixed(1)}${tempUnit}</p>
                     </div>
-                `;
-
-                // Append the weather card to the container
-                forecastContainer.appendChild(weatherDay);
-            }
+                </div>
+            `;
+            forecastContainer.appendChild(weatherDay);
         });
 
-        forecastContainer.classList.add('visible');
-    }
-
-    function updateWeatherDisplay() {
-        const cityDropdown = document.getElementById('city-dropdown');
-        const coordinates = cityDropdown.value.split(',');
-        const lat = coordinates[0];
-        const lon = coordinates[1];
-
-        // Call the 7Timer API again to get updated weather data in the selected unit
-        const apiUrl = `http://www.7timer.info/bin/api.pl?lon=${lon}&lat=${lat}&product=civil&output=json`;
-
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                displayWeather(data);
-            })
-            .catch(error => {
-                console.error("Error fetching the weather data:", error);
-                document.getElementById('weather-forecast').innerHTML = "<p>Failed to retrieve weather data. Please try again later.</p>";
-            });
+        lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
     }
 });
